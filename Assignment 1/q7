@@ -1,0 +1,24 @@
+// Q7: Closure with makeMultiplier
+
+function makeMultiplier(multiplier) {
+  // The returned inner function "remembers" `multiplier`
+  return function (number) {
+    return number * multiplier;
+  };
+}
+
+const triple = makeMultiplier(3);
+const double = makeMultiplier(2);
+
+console.log(triple(5)); // 15
+console.log(double(5)); // 10
+
+/*
+ HOW CLOSURE WORKS:
+ When makeMultiplier(3) finishes, its local variable `multiplier` would
+ normally be destroyed. But the inner function still references it, so
+ JavaScript keeps that variable alive in the inner function's lexical
+ environment. This is a closure: a function bundled with the variables from
+ the scope where it was created. Each call creates its own separate
+ `multiplier`, so triple and double do not interfere with each other.
+*/

@@ -1,0 +1,22 @@
+// Q4: Constructor function + prototype method
+
+function Car(brand, model) {
+  this.brand = brand;
+  this.model = model;
+}
+
+// Defined once on the prototype, shared by all Car objects
+Car.prototype.getDetails = function () {
+  console.log(`Brand: ${this.brand}, Model: ${this.model}`);
+};
+
+const car1 = new Car("Toyota", "Fortuner");
+const car2 = new Car("Honda", "City");
+
+car1.getDetails();
+car2.getDetails();
+
+// Proof of method sharing
+console.log(car1.getDetails === car2.getDetails);                    // true
+console.log(car1.hasOwnProperty("getDetails"));                      // false (not copied)
+console.log(Object.getPrototypeOf(car1) === Car.prototype);          // true
