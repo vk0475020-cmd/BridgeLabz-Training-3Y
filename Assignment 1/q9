@@ -1,0 +1,55 @@
+// Q9: ES6 classes vs prototype version
+
+// ---------- Prototype version ----------
+function PersonProto(name) {
+  this.name = name;
+}
+PersonProto.prototype.printName = function () {
+  console.log(`Name: ${this.name}`);
+};
+function StudentProto(name, branch) {
+  PersonProto.call(this, name);
+  this.branch = branch;
+}
+StudentProto.prototype = Object.create(PersonProto.prototype);
+StudentProto.prototype.constructor = StudentProto;
+StudentProto.prototype.printBranch = function () {
+  console.log(`Branch: ${this.branch}`);
+};
+
+// ---------- ES6 class version ----------
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  printName() {
+    console.log(`Name: ${this.name}`);
+  }
+}
+class Student extends Person {
+  constructor(name, branch) {
+    super(name); // calls Person's constructor (must come before using `this`)
+    this.branch = branch;
+  }
+  printBranch() {
+    console.log(`Branch: ${this.branch}`);
+  }
+}
+
+// ---------- Compare ----------
+const s1 = new StudentProto("Neha", "CSE");
+const s2 = new Student("Neha", "CSE");
+
+console.log("Prototype version:");
+s1.printName();
+s1.printBranch();
+
+console.log("Class version:");
+s2.printName();
+s2.printBranch();
+
+// Same prototype-chain structure under the hood
+console.log(Object.getPrototypeOf(Student.prototype) === Person.prototype);           // true
+console.log(Object.getPrototypeOf(StudentProto.prototype) === PersonProto.prototype); // true
+console.log(s1.hasOwnProperty("printName"), s2.hasOwnProperty("printName"));          // false false
+console.log(typeof Student); // "function" -> classes are syntactic sugar over constructors

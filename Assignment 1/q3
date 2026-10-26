@@ -1,0 +1,29 @@
+// Q3: Arrow function vs normal function and `this`
+
+// Arrow function as a method (problem)
+const user = {
+  name: "Riya",
+  showName: () => {
+    console.log("Arrow:", this.name);
+  },
+};
+user.showName(); // undefined
+
+/*
+ WHY undefined?
+ Arrow functions do NOT have their own `this`. They take `this` from the
+ surrounding (lexical) scope. An object literal `{}` is NOT a scope, so the
+ surrounding scope is the top level of the file:
+   - In Node.js module: `this` = module.exports ({}), so this.name is undefined.
+   - In browser: `this` = window, and window.name is "" (or undefined).
+ It never refers to `user`.
+*/
+
+// Fix: use a normal function; `this` = the object before the dot
+const userFixed = {
+  name: "Riya",
+  showName: function () {
+    console.log("Normal:", this.name);
+  },
+};
+userFixed.showName(); // Riya
