@@ -1,0 +1,35 @@
+"use strict";
+// Q6 - Pyramid Pattern Generator
+// run: node q6_pyramid.js 6      (default is 5)
+
+// user input comes from the command line; fall back to 5
+const userInput = Number(process.argv[2]);
+const rows = Number.isInteger(userInput) && userInput > 0 ? userInput : 5;
+
+function printPyramid(totalRows) {
+  for (let row = 1; row <= totalRows; row++) {
+    let line = "";
+    for (let col = 1; col <= row; col++) {
+      line += "* ";
+    }
+    console.log(line.trim());
+  }
+}
+printPyramid(rows);
+
+// ----- var vs let -----
+// The printed pattern is the same, because the loop body runs right away.
+// The difference shows up with closures: var is function-scoped (ONE shared i),
+// let creates a NEW i for every iteration.
+console.log("\nvar vs let with setTimeout:");
+for (var v = 1; v <= 3; v++) setTimeout(() => console.log("var  i =", v), 0); // 4, 4, 4
+for (let l = 1; l <= 3; l++) setTimeout(() => console.log("let  i =", l), 0); // 1, 2, 3
+console.log("(after the loop, var v is still alive:", v, ")");
+
+// Debug tip: breakpoint inside the inner loop, watch `row`, `col` and `line`.
+// Strict mode: writing `for (i = 0; ...)` without a declaration throws ReferenceError.
+try {
+  new Function('"use strict"; for (k = 0; k < 1; k++) {}')();
+} catch (e) {
+  console.log("Strict mode caught:", e.message);
+}

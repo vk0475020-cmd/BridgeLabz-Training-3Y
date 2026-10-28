@@ -1,0 +1,49 @@
+"use strict";
+// Q3 - Transaction Validator
+
+class TransactionError extends Error {
+  constructor(message, type) {
+    super(message);
+    this.name = "TransactionError";
+    this.type = type; // used to categorize the errors later
+  }
+}
+
+const transactions = [
+  { id: 1, amount: 2000 },
+  { id: 2, amount: -500 },
+  { id: 3 },
+  null,
+];
+
+function validateTransaction(txn) {
+  if (txn === null) throw new TransactionError("Null entry", "null");
+  if (txn.id === undefined || txn.amount === undefined) {
+    throw new TransactionError("Missing id or amount", "missing");
+  }
+  if (txn.amount < 0) throw new TransactionError(`Negative amount (${txn.amount})`, "negative");
+  return true;
+}
+
+const validTransactions = [];
+const invalidTransactions = [];
+
+for (let i = 0; i < transactions.length; i++) {
+  const txn = transactions[i];
+  // BREAKPOINT: in VS Code click left of this line (or uncomment the next one)
+  // and watch txn, i, validTransactions in the Watch panel.
+  // debugger;
+  try {
+    validateTransaction(txn);
+    validTransactions.push(txn);
+  } catch (error) {
+    invalidTransactions.push({ index: i, type: error.type, message: error.message });
+  }
+}
+
+console.log("Valid:", validTransactions);
+console.log("Invalid:", invalidTransactions);
+console.log(`\nSuccessful: ${validTransactions.length}, Failed: ${invalidTransactions.length}`);
+for (const type of ["negative", "missing", "null"]) {
+  console.log(`  ${type} errors: ${invalidTransactions.filter((e) => e.type === type).length}`);
+}

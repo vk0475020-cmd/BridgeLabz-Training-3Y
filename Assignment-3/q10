@@ -1,0 +1,51 @@
+"use strict";
+// Q10 - Nested Hoisting and Closures
+
+function outer() {
+  console.log(count); // undefined
+  var count = 5;
+  function inner() {
+    console.log(count); // undefined
+    var count = 10;
+  }
+  inner();
+}
+outer();
+
+// 1. PREDICTION: undefined, then undefined.
+// 2. WHY: every function call gets its OWN memory context. `var count` is hoisted
+//    to the top of whichever function declares it:
+//      outer's memory: count = undefined, inner = function
+//      inner's memory: count = undefined  <- its own count, which SHADOWS outer's
+//    So inner never sees outer's 5, because the local var count (hoisted, still
+//    undefined) hides it. Without `var count = 10` inside inner, it would print 5
+//    via the closure.
+
+// Proof of the closure when there is no shadowing:
+function outer2() {
+  var count = 5;
+  function inner() { console.log("inner2 sees outer count:", count); } // 5
+  inner();
+}
+outer2();
+
+// 3. Arrow version of inner
+function outer3() {
+  console.log(count); // undefined (outer's var is still hoisted)
+  var count = 5;
+  const inner = () => {
+    console.log(count); // still undefined: `var count` inside the arrow is function-scoped to the arrow
+    var count = 10;
+  };
+  inner();
+  // Difference: `inner` is now a const, so it is NOT hoisted as a usable function.
+  // Calling inner() BEFORE the const line would throw a ReferenceError (TDZ).
+}
+outer3();
+
+// 4. CALL STACK (VS Code debugger, breakpoint inside inner):
+//      inner
+//      outer
+//      (anonymous) <- module code
+//    Each frame has its own Local scope in the Variables panel, which is where
+//    you can see two separate `count` variables.

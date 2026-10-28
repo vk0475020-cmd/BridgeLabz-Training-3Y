@@ -1,0 +1,38 @@
+"use strict";
+// Q1 - Dynamic Data Parser
+
+const apiData = ["25", "true", "false", "NaN", " ", "100px", "3.14", null, undefined];
+
+const validNumbers = [];
+const invalidNumbers = [];
+
+for (let i = 0; i < apiData.length; i++) {
+  const value = apiData[i];
+
+  // the three conversions asked for
+  const asNumber = Number(value);
+  const asBoolean = Boolean(value);
+  const asString = String(value);
+
+  // Number(" ") gives 0 (not NaN!) and Number(null) gives 0 too,
+  // so I check for those cases myself instead of trusting isNaN alone
+  const isBlank = typeof value === "string" && value.trim() === "";
+  const isMissing = value === null || value === undefined;
+  const isValid = !isBlank && !isMissing && !Number.isNaN(asNumber);
+
+  console.log(`[${i}] raw=${JSON.stringify(value)} | Number=${asNumber} | Boolean=${asBoolean} | String="${asString}"`);
+
+  if (isValid) {
+    validNumbers.push(asNumber);
+    console.log("    -> VALID number");
+  } else {
+    invalidNumbers.push(asString);
+    console.log("    -> INVALID (skipped)");
+  }
+}
+
+console.log("\n===== REPORT =====");
+console.log("Valid numbers  :", validNumbers);
+console.log("Invalid values :", invalidNumbers);
+console.log(`Total: ${apiData.length}, valid: ${validNumbers.length}, invalid: ${invalidNumbers.length}`);
+// debug note: Boolean("false") is TRUE because any non-empty string is truthy

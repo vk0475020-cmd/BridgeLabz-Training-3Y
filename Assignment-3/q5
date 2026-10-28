@@ -1,0 +1,48 @@
+"use strict";
+// Q5 - Hoisting Lab
+
+// ----- 1. Original code (predicted output: undefined, Game started, ready) -----
+// Memory state before any line runs (creation phase):
+//   score      -> var: hoisted, value = undefined
+//   announce   -> function declaration: fully hoisted (name AND body)
+//   status     -> let: hoisted but in the TEMPORAL DEAD ZONE until its line runs
+//   startGame  -> function declaration: fully hoisted
+console.log("--- original ---");
+console.log(score);   // undefined (not an error)
+announce();           // works: "Game started"
+var score = 50;
+function announce() { console.log("Game started"); }
+let status = "ready";
+startGame();          // fine, because `status` is already set by the time we CALL it
+function startGame() { console.log(status); }
+
+// ----- the real trap: touching a let variable before its line -----
+console.log("--- TDZ demo ---");
+try {
+  console.log(early);
+  let early = 1;
+} catch (e) {
+  console.log("Caught:", e.name, "-", e.message);
+}
+
+// ----- 2. Fixed version (declare first, use after) -----
+console.log("--- fixed ---");
+const fixedScore = 50;
+const fixedStatus = "ready";
+function announce2() { console.log("Game started"); }
+function startGame2() { console.log(fixedStatus); }
+console.log(fixedScore);
+announce2();
+startGame2();
+
+// ----- 3. Arrow function version -----
+// Arrow functions stored in const/let are NOT hoisted like declarations
+// (the variable is in the TDZ until the line runs).
+console.log("--- arrow functions ---");
+try {
+  announceArrow(); // ReferenceError: Cannot access before initialization
+} catch (e) {
+  console.log("Caught:", e.name, "-", e.message);
+}
+const announceArrow = () => console.log("Game started");
+announceArrow(); // works now, because it's called AFTER the definition

@@ -1,0 +1,41 @@
+"use strict";
+// Q9 - JSON Audit
+
+const rawData = [
+  '{"user":"Alex","age":25}',
+  '{"id":2}',
+  '{invalid}',
+  '{"user":"Mina","age":"22"}',
+];
+
+const cleanData = [];
+const errors = [];
+
+for (let i = 0; i < rawData.length; i++) {
+  const lineNumber = i + 1;
+  try {
+    const parsed = JSON.parse(rawData[i]); // throws SyntaxError on bad JSON -> jumps to catch
+
+    // check for missing keys
+    const missing = ["user", "age"].filter((key) => !(key in parsed));
+    if (missing.length > 0) {
+      throw new Error(`Missing key(s): ${missing.join(", ")}`);
+    }
+    cleanData.push(parsed);
+  } catch (error) {
+    // Control flow when an error happens: the rest of the try block is skipped
+    // and execution continues here, then the loop moves to the next line.
+    const kind = error instanceof SyntaxError ? "Invalid JSON" : "Validation error";
+    errors.push(`Line ${lineNumber}: ${kind} - ${error.message}`);
+  }
+}
+
+console.log("Clean entries:", cleanData);
+console.log("Errors:");
+errors.forEach((e) => console.log("  " + e));
+
+// ----- Bonus: age to Number, remove under-18 -----
+const adults = cleanData
+  .map((person) => ({ ...person, age: Number(person.age) }))
+  .filter((person) => person.age >= 18);
+console.log("\nAdults (age converted to Number):", adults);
