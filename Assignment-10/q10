@@ -1,0 +1,3 @@
+/* Q10 - keep carousel images a fixed height so they don't jump */
+.carousel-item img { height: 420px; object-fit: cover; }
+.carousel-caption { background: rgba(0,0,0,.45); border-radius: 8px; }

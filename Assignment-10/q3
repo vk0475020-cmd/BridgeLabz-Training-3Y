@@ -1,0 +1,4 @@
+/* Q3 - hover effect: card lifts up and gets a bigger shadow */
+.product { transition: transform .25s ease, box-shadow .25s ease; }
+.product:hover { transform: translateY(-6px); box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.2) !important; }
+.product img { height: 180px; object-fit: cover; }

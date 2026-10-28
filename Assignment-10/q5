@@ -1,0 +1,17 @@
+/* Q5 - override Bootstrap's CSS variables to make our own theme */
+:root {
+  --bs-primary: #7b3fe4;          /* purple theme colour */
+  --bs-primary-rgb: 123, 63, 228; /* bg-primary uses the RGB version */
+  --bs-font-sans-serif: "Poppins", system-ui, sans-serif;
+  --bs-body-font-family: var(--bs-font-sans-serif);
+}
+/* buttons don't read --bs-primary directly, so set their variables too */
+.btn-primary {
+  --bs-btn-bg: #7b3fe4;
+  --bs-btn-border-color: #7b3fe4;
+  --bs-btn-hover-bg: #6228c4;
+  --bs-btn-hover-border-color: #6228c4;
+}
+h1, h2 { font-weight: 700; }
+.card-title { color: var(--bs-primary); }
+.card { border: 0; border-top: 4px solid var(--bs-primary); box-shadow: 0 2px 10px rgba(0,0,0,.08); }

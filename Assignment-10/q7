@@ -1,0 +1,3 @@
+/* Q7 */
+.list-group-item { padding: 1rem; }
+.badge { min-width: 62px; }
