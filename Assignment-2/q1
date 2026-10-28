@@ -1,0 +1,27 @@
+// Q1 - Scope Conflict Resolver
+
+// global variable: visible everywhere in this file
+let bonus = 5000;
+
+function calculateSalary(isPermanent) {
+  // local variables: only exist inside this function
+  const salary = 40000;
+  let total = salary;
+
+  // bonus is only added for permanent employees
+  if (isPermanent) {
+    total += bonus; // the function can READ the global bonus
+  }
+
+  console.log(`isPermanent = ${isPermanent} -> total salary inside function: ${total}`);
+  return total;
+}
+
+calculateSalary(true);   // 45000
+calculateSalary(false);  // 40000
+
+// changing isPermanent only changes the result, the global bonus is untouched
+console.log("Global bonus after both calls:", bonus); // still 5000
+
+// local variables are not visible outside the function
+console.log("Can we see salary outside?", typeof salary); // "undefined"

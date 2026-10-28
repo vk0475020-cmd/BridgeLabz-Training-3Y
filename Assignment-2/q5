@@ -1,0 +1,28 @@
+// Q5 - Boolean Logic Access System
+
+function checkSecurity(isDoorLocked, isWindowClosed, isAlarmOn, isOwnerInside) {
+  // all four must be true for the house to be "Secure"
+  // (the spec says door "closed", so I treat a locked door as closed)
+  const isSecure = isAlarmOn && isDoorLocked && isWindowClosed && isOwnerInside;
+
+  console.log(
+    `door locked=${isDoorLocked}, window closed=${isWindowClosed}, alarm=${isAlarmOn}, owner inside=${isOwnerInside} -> ${isSecure ? "Secure" : "Unsafe"}`
+  );
+
+  // using ! and || to find out what went wrong
+  if (!isSecure) {
+    const problems = [];
+    if (!isAlarmOn) problems.push("alarm is off");
+    if (!isDoorLocked) problems.push("door is not locked");
+    if (!isWindowClosed) problems.push("window is open");
+    if (!isOwnerInside) problems.push("owner is not inside");
+    console.log("   Reason:", problems.join(", "));
+  }
+}
+
+// test a few different combinations
+checkSecurity(true, true, true, true);    // Secure
+checkSecurity(false, true, true, true);   // door problem
+checkSecurity(true, false, true, true);   // window problem
+checkSecurity(true, true, false, true);   // alarm off
+checkSecurity(true, true, true, false);   // owner outside

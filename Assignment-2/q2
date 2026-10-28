@@ -1,0 +1,20 @@
+// Q2 - String Manipulation Report
+
+const productName = "  wireless headphones PRO  ";
+
+// step 1: trim extra spaces and make everything lowercase
+let cleaned = productName.trim().toLowerCase();
+
+// step 2: replace the word "pro" with "Pro Edition"
+// \b makes sure we only match the whole word, not letters inside another word
+cleaned = cleaned.replace(/\bpro\b/, "Pro Edition");
+
+// step 3: capitalize the first letter of each word
+const finalTitle = cleaned
+  .split(" ")
+  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+  .join(" ");
+
+console.log(`Original : "${productName}" (length ${productName.length})`);
+console.log(`Cleaned  : "${finalTitle}"`);
+console.log(`Length   : ${finalTitle.length}`);

@@ -1,0 +1,39 @@
+// Q6 - Event-Based Counter Simulation
+
+let count = 0; // shared by both functions
+
+function increment() {
+  count++;
+  console.log("Incremented -> count =", count);
+}
+
+function decrement() {
+  count--;
+  console.log("Decremented -> count =", count);
+}
+
+// simulate button clicks by calling the functions ourselves
+increment();
+increment();
+increment();
+decrement();
+
+// ---- nested function demo ----
+// the inner function can reach the outer function's variable (closure)
+function createCounter() {
+  let privateCount = 0; // only visible inside createCounter and its inner functions
+
+  function change(amount) {
+    privateCount += amount; // inner function updates the outer variable
+    console.log("Private count =", privateCount);
+  }
+
+  return { up: () => change(1), down: () => change(-1) };
+}
+
+const counter = createCounter();
+console.log("\nNested function version:");
+counter.up();
+counter.up();
+counter.down();
+console.log("Can we read privateCount directly?", typeof privateCount); // undefined
