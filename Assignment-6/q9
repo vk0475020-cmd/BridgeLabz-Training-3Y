@@ -1,0 +1,29 @@
+// Q9 – Debugging the Event Loop
+
+/*
+PREDICTED OUTPUT (before running):
+  1. Script start
+  2. Script end
+  3. Promise callback
+  4. Timeout callback
+*/
+
+console.log("Script start");
+setTimeout(() => console.log("Timeout callback"), 0);
+Promise.resolve().then(() => console.log("Promise callback"));
+console.log("Script end");
+
+/*
+ACTUAL OUTPUT (matches prediction):
+  Script start
+  Script end
+  Promise callback
+  Timeout callback
+
+EXPLANATION:
+- Synchronous code ("Script start", "Script end") runs first on the call stack.
+- setTimeout schedules a MACROtask; Promise.then schedules a MICROtask.
+- When the stack empties, the event loop runs ALL microtasks before moving to
+  the next macrotask. So "Promise callback" runs before "Timeout callback",
+  even though the timer delay is 0 ms.
+*/

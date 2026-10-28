@@ -1,0 +1,26 @@
+// Q4 – DevOps Delay: Promise.all vs Promise.race
+
+// Simulates a server that responds after `ms`, failing ~10% of the time
+function deployToServer(name, ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (Math.random() < 0.1) reject(new Error(`${name} failed`));
+      else resolve(`${name} responded`);
+    }, ms);
+  });
+}
+
+const serverA = () => deployToServer("Server A", 2000);
+const serverB = () => deployToServer("Server B", 3000);
+
+// Promise.all: waits for EVERY promise; rejects immediately if any rejects
+Promise.all([serverA(), serverB()])
+  .then((results) => {
+    console.log("Deployment completed for all servers", results);
+  })
+  .catch((err) => console.error("Promise.all error:", err.message));
+
+// Promise.race: settles as soon as the FIRST promise settles
+Promise.race([serverA(), serverB()])
+  .then((winner) => console.log("Fastest response:", winner))
+  .catch((err) => console.error("Promise.race error:", err.message));

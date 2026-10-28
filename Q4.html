@@ -1,0 +1,47 @@
+// Q4: Custom Form Builder
+
+class FormBuilder {
+  // fields: array like { type: 'text', label: 'Username' }
+  constructor(fields, container) {
+    this.fields = fields;
+    this.container = container;
+  }
+
+  // Build the form HTML with innerHTML
+  render() {
+    const fieldsHtml = this.fields
+      .map((field, index) => `
+        <label for="field-${index}">${field.label}</label>
+        <input id="field-${index}" type="${field.type}" data-label="${field.label}">`)
+      .join("");
+
+    this.container.innerHTML = `<form id="dynamicForm">${fieldsHtml}<button type="submit">Submit</button></form>`;
+
+    this.container.querySelector("#dynamicForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = this.getFormData();
+      console.log(data);
+      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    });
+  }
+
+  // Returns all entered values as { label: value }
+  getFormData() {
+    const data = {};
+    this.container.querySelectorAll("input").forEach((input) => {
+      data[input.dataset.label] = input.value;
+    });
+    return data;
+  }
+}
+
+const builder = new FormBuilder(
+  [
+    { type: "text", label: "Username" },
+    { type: "email", label: "Email" },
+    { type: "password", label: "Password" },
+    { type: "number", label: "Age" },
+  ],
+  document.getElementById("formContainer")
+);
+builder.render();
