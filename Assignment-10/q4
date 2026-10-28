@@ -1,0 +1,3 @@
+/* Q4 - small touches */
+h1 { font-family: Georgia, serif; letter-spacing: 1px; }
+.figure-img { max-height: 260px; object-fit: cover; width: 100%; }

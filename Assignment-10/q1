@@ -1,0 +1,5 @@
+/* Q1 - only the extras Bootstrap doesn't give us */
+.hero {
+  background: linear-gradient(rgba(13, 32, 80, .75), rgba(13, 32, 80, .75)),
+    url("https://picsum.photos/id/1048/1600/700") center/cover;
+}

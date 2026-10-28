@@ -38,4 +38,8 @@ errors.forEach((e) => console.log("  " + e));
 const adults = cleanData
   .map((person) => ({ ...person, age: Number(person.age) }))
   .filter((person) => person.age >= 18);
-console.log("\nAdults (age converted to Number):", adults);
+console.log("\nAdults (age converted to Number):", adults);/* Q1 - only the extras Bootstrap doesn't give us */
+.hero {
+  background: linear-gradient(rgba(13, 32, 80, .75), rgba(13, 32, 80, .75)),
+    url("https://picsum.photos/id/1048/1600/700") center/cover;
+}
