@@ -1,0 +1,33 @@
+// Q5 - movie ticket booking
+const form = document.getElementById("bookingForm");
+const ticketBox = document.getElementById("ticket");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const seats = document.getElementById("seats").value.trim();
+
+  // seats: 1-10 only (regex matches 10 or 1-9)
+  const nameOk = /^[A-Za-z]+( [A-Za-z]+)*$/.test(name);
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const seatsOk = /^(10|[1-9])$/.test(seats);
+
+  document.getElementById("nameError").textContent = nameOk ? "" : "Name must contain only alphabets.";
+  document.getElementById("emailError").textContent = emailOk ? "" : "Enter a valid email.";
+  document.getElementById("seatsError").textContent = seatsOk ? "" : "Seats must be between 1 and 10.";
+
+  if (!(nameOk && emailOk && seatsOk)) {
+    ticketBox.style.display = "none";
+    return;
+  }
+
+  // store booking in an object and show it
+  const booking = { name, email, seats: Number(seats) };
+  ticketBox.style.display = "block";
+  ticketBox.innerHTML = `<h3>Ticket Confirmed</h3>
+    <p>Name: ${booking.name}</p>
+    <p>Email: ${booking.email}</p>
+    <p>Seats: ${booking.seats}</p>`;
+  console.log(booking);
+});

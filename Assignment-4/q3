@@ -1,0 +1,55 @@
+// Q3 - library management (run with: node q3_library_system.js)
+const readline = require("readline");
+
+class Book {
+  constructor(title, author, isbn) {
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.isIssued = false;
+  }
+
+  issueBook() {
+    if (this.isIssued) return false; // already taken
+    this.isIssued = true;
+    return true;
+  }
+
+  returnBook() {
+    this.isIssued = false;
+  }
+}
+
+const books = [
+  new Book("Clean Code", "Robert Martin", "1001"),
+  new Book("You Don't Know JS", "Kyle Simpson", "1002"),
+  new Book("Eloquent JavaScript", "Marijn Haverbeke", "1003"),
+  new Book("The Pragmatic Programmer", "Andrew Hunt", "1004"),
+];
+
+function showAvailableBooks() {
+  console.log("\nAvailable books:");
+  const available = books.filter((b) => !b.isIssued);
+  if (available.length === 0) console.log("No books available right now.");
+  available.forEach((b) => console.log(`${b.isbn} - ${b.title} by ${b.author}`));
+}
+
+function issueByIsbn(isbn) {
+  const book = books.find((b) => b.isbn === isbn.trim());
+  if (!book) return console.log("No book found with that ISBN.");
+  if (book.issueBook()) console.log(`"${book.title}" issued successfully.`);
+  else console.log(`Sorry, "${book.title}" is already issued.`);
+}
+
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+function ask() {
+  showAvailableBooks();
+  rl.question("\nEnter ISBN to issue (or 'q' to quit): ", (answer) => {
+    if (answer.trim().toLowerCase() === "q") return rl.close();
+    issueByIsbn(answer);
+    ask(); // keep asking
+  });
+}
+
+ask();
