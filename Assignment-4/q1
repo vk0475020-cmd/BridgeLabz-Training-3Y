@@ -1,0 +1,40 @@
+// Q1 - E-commerce product manager
+
+class Product {
+  constructor(id, name, price, category) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.category = category;
+  }
+
+  // reduces the price by the given percent (e.g. 10 => 10% off)
+  applyDiscount(percent) {
+    this.price = this.price - (this.price * percent) / 100;
+  }
+
+  getDetails() {
+    return `#${this.id} | ${this.name} | ${this.category} | Rs.${this.price.toFixed(2)}`;
+  }
+}
+
+const products = [
+  new Product(1, "Laptop", 55000, "Electronics"),
+  new Product(2, "Mouse", 499, "Accessories"),
+  new Product(3, "Headphones", 2500, "Electronics"),
+  new Product(4, "Notebook", 120, "Stationery"),
+  new Product(5, "Office Chair", 7500, "Furniture"),
+];
+
+console.log("All products:");
+products.forEach((p) => console.log(p.getDetails()));
+
+// discount on one product
+products[0].applyDiscount(10);
+console.log("\nAfter 10% discount on laptop:");
+console.log(products[0].getDetails());
+
+// only products costing more than 1000
+const expensiveProducts = products.filter((p) => p.price > 1000);
+console.log("\nProducts with price > 1000:");
+expensiveProducts.forEach((p) => console.log(p.getDetails()));

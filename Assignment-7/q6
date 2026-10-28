@@ -1,0 +1,17 @@
+// Q6 - live table filter
+const searchBox = document.getElementById("search");
+const rows = document.querySelectorAll("#tableBody tr");
+const noResults = document.getElementById("noResults");
+
+searchBox.addEventListener("input", () => {
+  const query = searchBox.value.trim().toLowerCase(); // lowercase both sides = case-insensitive
+  let visibleCount = 0;
+
+  rows.forEach((row) => {
+    const matches = row.textContent.toLowerCase().includes(query);
+    row.style.display = matches ? "" : "none";
+    if (matches) visibleCount++;
+  });
+
+  noResults.style.display = visibleCount === 0 ? "block" : "none";
+});

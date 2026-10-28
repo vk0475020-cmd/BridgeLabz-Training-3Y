@@ -1,0 +1,28 @@
+"use strict";
+// Q4 - Debugging Mystery
+
+// 1. WHY IT FAILS: in strict mode, assigning to a variable that was never declared
+//    throws "ReferenceError: greeting is not defined". Without strict mode JS would
+//    silently create a global variable `greeting` (a classic bug source).
+function brokenMessage() {
+  greeting = "Welcome"; // undeclared
+  console.log(greeting);
+}
+
+try {
+  brokenMessage();
+} catch (error) {
+  console.log("Caught:", error.name, "-", error.message);
+}
+
+// 2. FIX: declare it. `const` keeps it local to this function, so nothing leaks globally.
+function showMessage() {
+  const greeting = "Welcome";
+  console.log(greeting);
+}
+showMessage();
+console.log("greeting leaked globally?", typeof globalThis.greeting !== "undefined"); // false
+
+// 3. DEBUGGER (VS Code): put a breakpoint on the console.log inside showMessage,
+//    press F5, add `greeting` to WATCH, and the CALL STACK panel will show:
+//    showMessage -> (anonymous) module code.

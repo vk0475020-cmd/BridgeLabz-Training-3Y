@@ -1,0 +1,61 @@
+// Q8 - Strict Mode Showdown
+// The original function has TWO problems for strict mode:
+//   1. duplicate parameter names  demo(a, a)  -> SyntaxError (caught at PARSE time)
+//   2. `total = 10` (undeclared)              -> ReferenceError at run time
+//   3. `delete total`                         -> SyntaxError (can't delete a plain variable)
+// Because SyntaxErrors happen before the code runs, a normal try/catch can't catch
+// them, so I build the code as a string with new Function() to test both modes safely.
+
+const demoSource = `
+  function demo(a, a) {
+    total = 10;
+    delete total;
+    return a;
+  }
+  return demo(5, 10);
+`;
+
+console.log("--- WITHOUT strict mode ---");
+try {
+  const result = new Function(demoSource)();
+  console.log("Ran fine. demo(5, 10) returned:", result); // 10 -> the 2nd `a` wins
+  // total became an implicit global, and `delete total` removed it again (allowed in sloppy mode)
+  console.log("total still exists after delete? ->", typeof globalThis.total); // undefined
+} catch (e) {
+  console.log("Error:", e.name, "-", e.message);
+}
+
+console.log("\n--- WITH strict mode ---");
+try {
+  new Function('"use strict";' + demoSource)();
+} catch (e) {
+  console.log("Error:", e.name, "-", e.message);
+}
+
+// Strict version of the individual problems, one at a time:
+const problems = {
+  "duplicate params": '"use strict"; function f(a, a) {}',
+  "undeclared variable": '"use strict"; total = 10;',
+  "delete a variable": '"use strict"; var x = 1; delete x;',
+};
+console.log("\n--- Each problem on its own (strict) ---");
+for (const [name, code] of Object.entries(problems)) {
+  try {
+    new Function(code)();
+  } catch (e) {
+    console.log(`${name}: ${e.name} - ${e.message}`);
+  }
+}
+
+// WHY strict mode bans these: duplicate params hide typos (which `a` do you mean?),
+// implicit globals pollute the global scope, and deleting variables makes engines
+// slower and code unpredictable.
+
+// ----- Correct ES6 version -----
+"use strict"; // (only a real directive at the very top of a file/function, shown here for the example)
+function demoFixed(first, second) {
+  let total = 10;            // declared, local
+  total = total + first + second;
+  return total;              // no delete needed, properties can be deleted but variables can't
+}
+console.log("\nFixed version:", demoFixed(5, 10));

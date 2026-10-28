@@ -1,0 +1,17 @@
+// Q4 - theme switcher using setAttribute only
+const buttons = document.querySelectorAll("[data-theme-choice]");
+const currentText = document.getElementById("current");
+
+function applyTheme(theme) {
+  // setAttribute("class", ...) replaces the class so old themes don't pile up
+  document.body.setAttribute("class", "theme-" + theme);
+  // remember the theme in a custom attribute
+  document.body.setAttribute("data-theme", theme);
+  currentText.textContent = "Current theme: " + document.body.getAttribute("data-theme");
+}
+
+buttons.forEach((btn) => {
+  btn.addEventListener("click", () => applyTheme(btn.getAttribute("data-theme-choice")));
+});
+
+applyTheme("light");

@@ -1,0 +1,30 @@
+// Q2 – Task Scheduler: Micro vs Macro
+
+console.log("Start");
+
+// Macrotask: goes to the macrotask (timer) queue
+setTimeout(() => console.log("setTimeout callback (macrotask)"), 0);
+
+// Microtask: goes to the microtask queue
+Promise.resolve().then(() => console.log("Promise.then callback (microtask)"));
+
+// Synchronous: runs immediately on the call stack
+console.log("Synchronous log");
+
+console.log("End");
+
+/*
+Expected output:
+  Start
+  Synchronous log
+  End
+  Promise.then callback (microtask)
+  setTimeout callback (macrotask)
+
+WHY microtasks run before macrotasks:
+- The event loop first runs all synchronous code on the call stack.
+- When the stack is empty, it drains the ENTIRE microtask queue (promise callbacks,
+  queueMicrotask) before taking the next macrotask (setTimeout, I/O, UI events).
+- Even with a 0ms delay, setTimeout's callback is a macrotask, so it waits until
+  the current script and all pending microtasks finish.
+*/

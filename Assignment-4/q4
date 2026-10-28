@@ -1,0 +1,51 @@
+q// Q4 - dynamic form generator
+
+class FormBuilder {
+  constructor(fields, container) {
+    this.fields = fields;
+    this.container = container;
+    this.render();
+  }
+
+  // builds the form HTML as a string and drops it in with innerHTML
+  render() {
+    let html = '<form id="dynamicForm">';
+    this.fields.forEach((field, index) => {
+      html += `<div class="field"><label>${field.label}</label><br>`;
+      if (field.type === "select") {
+        html += `<select name="field${index}">` +
+          field.options.map((o) => `<option>${o}</option>`).join("") + "</select>";
+      } else {
+        html += `<input type="${field.type}" name="field${index}">`;
+      }
+      html += "</div>";
+    });
+    html += '<button type="submit">Submit</button></form>';
+    this.container.innerHTML = html;
+
+    this.form = this.container.querySelector("#dynamicForm");
+    this.form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      document.getElementById("output").textContent = JSON.stringify(this.getFormData(), null, 2);
+    });
+  }
+
+  // returns { label: value, ... } for every field
+  getFormData() {
+    const data = {};
+    this.fields.forEach((field, index) => {
+      data[field.label] = this.form.elements["field" + index].value;
+    });
+    return data;
+  }
+}
+
+const fields = [
+  { type: "text", label: "Username" },
+  { type: "email", label: "Email" },
+  { type: "password", label: "Password" },
+  { type: "number", label: "Age" },
+  { type: "select", label: "City", options: ["Mathura", "Delhi", "Agra"] },
+];
+
+new FormBuilder(fields, document.getElementById("formContainer"));

@@ -1,0 +1,36 @@
+// Q8: Dynamic object updater
+
+const user = { name: "John", email: "john@mail.com", age: 21 };
+
+const form = document.getElementById("userForm");
+const display = document.getElementById("display");
+
+// Show the object on the page
+function renderUser() {
+  display.textContent = JSON.stringify(user, null, 2);
+}
+
+// Fill the form inputs with the current object values
+function fillForm() {
+  Object.keys(user).forEach((key) => {
+    document.getElementById(key).value = user[key];
+  });
+}
+
+// Copy form values into the object
+function updateUser() {
+  user.name = document.getElementById("name").value;
+  user.email = document.getElementById("email").value;
+  user.age = Number(document.getElementById("age").value);
+  renderUser();
+}
+
+fillForm();
+renderUser();
+
+// "Real time": update on every keystroke, and also on submit
+form.addEventListener("input", updateUser);
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  updateUser();
+});

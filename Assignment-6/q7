@@ -1,0 +1,40 @@
+// Q7 – Lazy Loader: Promise.allSettled
+
+function loadProfile() { return new Promise(r => setTimeout(() => r("Profile Loaded"), 2000)); }
+function loadPosts() { return new Promise(r => setTimeout(() => r("Posts Loaded"), 1500)); }
+function loadMessages() { return new Promise(r => setTimeout(() => r("Messages Loaded"), 1000)); }
+
+// Wrap a loader so it rejects after it finishes (used for the randomly chosen one)
+const makeFail = (loader, name) =>
+  loader().then(() => { throw new Error(`${name} failed to load`); });
+
+async function loadDashboard() {
+  const startTime = Date.now();
+
+  const modules = [
+    { name: "Profile", loader: loadProfile },
+    { name: "Posts", loader: loadPosts },
+    { name: "Messages", loader: loadMessages },
+  ];
+
+  // Randomly pick one module to reject
+  const failIndex = Math.floor(Math.random() * modules.length);
+  const promises = modules.map((m, i) =>
+    i === failIndex ? makeFail(m.loader, m.name) : m.loader()
+  );
+
+  // allSettled never rejects: it waits for all and reports each outcome
+  const results = await Promise.allSettled(promises);
+
+  results.forEach((result, i) => {
+    if (result.status === "fulfilled") {
+      console.log(`✅ ${modules[i].name}: ${result.value}`);
+    } else {
+      console.log(`❌ ${modules[i].name}: ${result.reason.message}`);
+    }
+  });
+
+  console.log(`Total time taken: ${Date.now() - startTime} ms`); // ≈ 2000ms (slowest module)
+}
+
+loadDashboard();

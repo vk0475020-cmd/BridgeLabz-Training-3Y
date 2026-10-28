@@ -1,0 +1,21 @@
+// Q7 - mouse coords + red dots
+const box = document.getElementById("box");
+const coords = document.getElementById("coords");
+
+box.addEventListener("mousemove", (e) => {
+  coords.textContent = `clientX: ${e.clientX}, clientY: ${e.clientY}`;
+});
+
+box.addEventListener("mouseleave", () => {
+  coords.textContent = "Mouse is outside the box";
+});
+
+box.addEventListener("dblclick", (e) => {
+  // clientX/Y are relative to the window, so subtract the box's own position
+  const rect = box.getBoundingClientRect();
+  const dot = document.createElement("div");
+  dot.className = "dot";
+  dot.style.left = (e.clientX - rect.left - box.clientLeft) + "px";
+  dot.style.top = (e.clientY - rect.top - box.clientTop) + "px";
+  box.appendChild(dot);
+});

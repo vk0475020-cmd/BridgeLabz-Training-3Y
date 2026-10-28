@@ -1,0 +1,59 @@
+// Q3: Library Management System
+// Run:  node q3_library.js            (demo)
+//       node q3_library.js 9780132350884   (issue a book by ISBN)
+
+class Book {
+  constructor(title, author, isbn) {
+    this.title = title;
+    this.author = author;
+    this.isbn = isbn;
+    this.isIssued = false;
+  }
+
+  issueBook() {
+    if (this.isIssued) return `"${this.title}" is already issued.`;
+    this.isIssued = true;
+    return `"${this.title}" has been issued.`;
+  }
+
+  returnBook() {
+    if (!this.isIssued) return `"${this.title}" was not issued.`;
+    this.isIssued = false;
+    return `"${this.title}" has been returned.`;
+  }
+}
+
+const books = [
+  new Book("Clean Code", "Robert C. Martin", "9780132350884"),
+  new Book("You Don't Know JS", "Kyle Simpson", "9781491904244"),
+  new Book("Eloquent JavaScript", "Marijn Haverbeke", "9781593279509"),
+  new Book("JavaScript: The Good Parts", "Douglas Crockford", "9780596517748"),
+];
+
+// Print every book that is not issued
+function displayAvailableBooks() {
+  console.log("Available books:");
+  const available = books.filter((book) => !book.isIssued);
+  if (available.length === 0) console.log("  (none)");
+  available.forEach((book) => console.log(`  ${book.isbn} - ${book.title} by ${book.author}`));
+}
+
+// Search by ISBN and issue the book
+function issueBookByISBN(isbn) {
+  const book = books.find((b) => b.isbn === isbn);
+  console.log(book ? book.issueBook() : `No book found with ISBN ${isbn}.`);
+}
+
+displayAvailableBooks();
+
+// ISBN from command line if given, otherwise a demo ISBN
+const searchIsbn = process.argv[2] || "9780132350884";
+console.log(`\nIssuing ISBN ${searchIsbn}...`);
+issueBookByISBN(searchIsbn);
+
+console.log();
+displayAvailableBooks();
+
+console.log("\nReturning the book...");
+const issued = books.find((b) => b.isbn === searchIsbn);
+if (issued) console.log(issued.returnBook());

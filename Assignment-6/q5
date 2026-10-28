@@ -1,0 +1,61 @@
+// Q5 – Avoiding Callback Hell
+
+// ---------- Version 1: Nested callbacks (callback hell) ----------
+function stageCb(name, callback) {
+  setTimeout(() => {
+    console.log(`[callbacks] ${name}`);
+    callback();
+  }, 1000);
+}
+
+function runWithCallbacks(done) {
+  stageCb("design", () => {
+    stageCb("build", () => {
+      stageCb("test", () => {
+        stageCb("deploy", () => {
+          stageCb("celebrate", () => {
+            done(); // pyramid of doom: each stage nests deeper
+          });
+        });
+      });
+    });
+  });
+}
+
+// ---------- Version 2: async/await ----------
+const stage = (name) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`[async/await] ${name}`);
+      resolve();
+    }, 1000);
+  });
+
+async function runWithAsyncAwait() {
+  // Reads top-to-bottom like synchronous code, flat structure,
+  // and a single try/catch can handle errors from every stage.
+  try {
+    await stage("design");
+    await stage("build");
+    await stage("test");
+    await stage("deploy");
+    await stage("celebrate");
+    console.log("[async/await] Pipeline complete!");
+  } catch (err) {
+    console.error("Pipeline error:", err);
+  }
+}
+
+// Run callbacks first, then the async/await version
+runWithCallbacks(() => {
+  console.log("[callbacks] Pipeline complete!\n");
+  runWithAsyncAwait();
+});
+
+/*
+Why async/await is more readable:
+- Flat, linear flow instead of deeply nested indentation.
+- Order of execution is obvious from top to bottom.
+- Error handling is centralized with try/catch instead of per-callback checks.
+- Easier to add, remove, or reorder stages and to use loops/conditionals.
+*/
