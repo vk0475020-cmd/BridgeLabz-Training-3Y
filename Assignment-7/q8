@@ -1,0 +1,21 @@
+// Q8 - dropdown without <select>
+const dropdown = document.getElementById("dropdown");
+const dropBtn = document.getElementById("dropBtn");
+const dropList = document.getElementById("dropList");
+
+dropBtn.addEventListener("click", () => dropList.classList.toggle("open"));
+
+dropList.addEventListener("click", (e) => {
+  if (e.target.tagName === "LI") {
+    dropBtn.textContent = e.target.textContent + " ▾";
+    dropList.classList.remove("open");
+  }
+});
+
+// third argument `true` = capturing phase, so this runs on the way DOWN,
+// before any other click handler gets the event
+document.addEventListener("click", (e) => {
+  if (!dropdown.contains(e.target)) {
+    dropList.classList.remove("open");
+  }
+}, true);

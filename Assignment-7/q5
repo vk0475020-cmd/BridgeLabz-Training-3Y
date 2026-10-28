@@ -1,0 +1,26 @@
+// Q5 - gallery with modal
+const gallery = document.getElementById("gallery");
+const overlay = document.getElementById("overlay");
+const modal = document.getElementById("modal");
+const bigImage = document.getElementById("bigImage");
+
+// 6 sample images from picsum (needs internet; swap in your own if you like)
+for (let i = 1; i <= 6; i++) {
+  const img = document.createElement("img");
+  img.src = `https://picsum.photos/id/${i + 10}/160/120`;
+  img.dataset.large = `https://picsum.photos/id/${i + 10}/900/600`;
+  img.alt = "Photo " + i;
+  gallery.appendChild(img);
+}
+
+gallery.addEventListener("click", (e) => {
+  if (e.target.tagName !== "IMG") return;
+  bigImage.src = e.target.dataset.large;
+  overlay.classList.add("open");
+});
+
+// click on the dark background closes it
+overlay.addEventListener("click", () => overlay.classList.remove("open"));
+
+// click inside the modal must NOT bubble up to the overlay, so stop it here
+modal.addEventListener("click", (e) => e.stopPropagation());

@@ -1,0 +1,39 @@
+// Q9 - form validation with live errors
+const form = document.getElementById("regForm");
+const success = document.getElementById("success");
+
+// one rule per field: returns error text, or "" when the value is fine
+const rules = {
+  name: (v) => v.trim() === "" ? "Name is required." : "",
+  email: (v) => v.trim() === "" ? "Email is required."
+        : !v.includes("@") ? "Email must contain @." : "",
+  password: (v) => v.length < 6 ? "Password must be at least 6 characters." : "",
+};
+
+// shows/clears the error for one field, returns true if the field is valid
+function checkField(fieldName) {
+  const value = document.getElementById(fieldName).value;
+  const message = rules[fieldName](value);
+  document.getElementById(fieldName + "Error").textContent = message;
+  return message === "";
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault(); // never let the browser actually submit/reload
+  success.textContent = "";
+
+  // check every field (don't stop at the first bad one so all errors show)
+  const results = Object.keys(rules).map(checkField);
+  if (results.every(Boolean)) {
+    success.textContent = "Form Submitted Successfully";
+    form.reset();
+  }
+});
+
+// when user fixes a field, the error clears automatically while typing
+// (only re-check fields that are already showing an error)
+form.addEventListener("input", (e) => {
+  const id = e.target.id;
+  if (document.getElementById(id + "Error").textContent !== "") checkField(id);
+  success.textContent = "";
+});

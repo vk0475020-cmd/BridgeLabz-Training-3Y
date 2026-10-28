@@ -1,0 +1,62 @@
+// Q1 - product list with event delegation
+const input = document.getElementById("productInput");
+const addBtn = document.getElementById("addBtn");
+const list = document.getElementById("productList");
+
+let editingItem = null; // the <li> currently being edited (only one at a time)
+
+function addProduct() {
+  const name = input.value.trim();
+  if (name === "") return;
+  const li = document.createElement("li");
+  li.innerHTML = `<span class="name"></span>
+    <button data-action="edit">Edit</button>
+    <button data-action="delete">Delete</button>`;
+  li.querySelector(".name").textContent = name; // textContent so no HTML injection
+  list.appendChild(li);
+  input.value = "";
+}
+
+function startEdit(li) {
+  if (editingItem) saveEdit(editingItem); // finish any previous edit first
+  const span = li.querySelector(".name");
+  const box = document.createElement("input");
+  box.className = "edit-box";
+  box.value = span.textContent;
+  span.replaceWith(box);
+  li.querySelector('[data-action="edit"]').textContent = "Save";
+  box.focus();
+  editingItem = li;
+}
+
+function saveEdit(li) {
+  const box = li.querySelector(".edit-box");
+  if (!box) return;
+  const span = document.createElement("span");
+  span.className = "name";
+  span.textContent = box.value.trim() || "(empty)";
+  box.replaceWith(span);
+  li.querySelector('[data-action="edit"]').textContent = "Edit";
+  editingItem = null;
+}
+
+addBtn.addEventListener("click", addProduct);
+input.addEventListener("keydown", (e) => { if (e.key === "Enter") addProduct(); });
+
+// ONE listener on the <ul> handles every Edit/Delete button, even for future items
+list.addEventListener("click", (e) => {
+  const action = e.target.dataset.action;
+  if (!action) return;
+  const li = e.target.closest("li");
+  if (action === "delete") {
+    if (editingItem === li) editingItem = null;
+    li.remove();
+  } else if (action === "edit") {
+    li === editingItem ? saveEdit(li) : startEdit(li);
+  }
+});
+
+// clicking anywhere outside the item being edited auto-saves it
+document.addEventListener("click", (e) => {
+  if (editingItem && !editingItem.contains(e.target)) saveEdit(editingItem);
+});

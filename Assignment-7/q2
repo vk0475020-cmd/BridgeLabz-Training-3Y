@@ -1,0 +1,36 @@
+// Q2 - character counter (max 100)
+const MAX_CHARS = 100;
+const textBox = document.getElementById("textBox");
+const counter = document.getElementById("counter");
+const resetBtn = document.getElementById("resetBtn");
+
+function updateCounter() {
+  const remaining = MAX_CHARS - textBox.value.length;
+  counter.textContent = remaining + " characters left";
+  counter.className = ""; // clear old colour first
+  if (remaining <= 0) counter.classList.add("danger");
+  else if (remaining <= 20) counter.classList.add("warning");
+}
+
+// block typing once the limit is hit (but still allow backspace, arrows, ctrl+a etc.)
+textBox.addEventListener("keydown", (e) => {
+  const isCharacterKey = e.key.length === 1 && !e.ctrlKey && !e.metaKey;
+  const isEnter = e.key === "Enter";
+  if (textBox.value.length >= MAX_CHARS && (isCharacterKey || isEnter)) {
+    e.preventDefault();
+  }
+});
+
+// pasting can sneak past keydown, so trim here as a safety net
+textBox.addEventListener("input", () => {
+  if (textBox.value.length > MAX_CHARS) {
+    textBox.value = textBox.value.slice(0, MAX_CHARS);
+  }
+  updateCounter();
+});
+
+resetBtn.addEventListener("click", () => {
+  textBox.value = "";
+  updateCounter();
+  textBox.focus();
+});

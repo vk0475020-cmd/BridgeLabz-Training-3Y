@@ -1,0 +1,48 @@
+// Q3 - 3 step form with validation
+const steps = document.querySelectorAll(".step");
+const nextBtn = document.getElementById("nextBtn");
+const backBtn = document.getElementById("backBtn");
+const errorBox = document.getElementById("error");
+const stepInfo = document.getElementById("stepInfo");
+const summary = document.getElementById("summary");
+
+let currentStep = 0;
+
+// each step has its own check; returns an error message or "" if fine
+const validators = [
+  () => document.getElementById("name").value.trim() === "" ? "Please enter your name." : "",
+  () => /^\S+@\S+\.\S+$/.test(document.getElementById("email").value.trim()) ? "" : "Enter a valid email.",
+  () => document.getElementById("password").value.length < 6 ? "Password must be at least 6 characters." : "",
+];
+
+function showStep() {
+  steps.forEach((s, i) => s.classList.toggle("active", i === currentStep));
+  stepInfo.textContent = `Step ${currentStep + 1} of ${steps.length}`;
+  backBtn.disabled = currentStep === 0;
+  nextBtn.textContent = currentStep === steps.length - 1 ? "Finish" : "Next";
+  errorBox.textContent = "";
+}
+
+nextBtn.addEventListener("click", () => {
+  const message = validators[currentStep]();
+  if (message) { errorBox.textContent = message; return; } // stay on this step
+
+  if (currentStep < steps.length - 1) {
+    currentStep++;
+    showStep();
+  } else {
+    // all steps done -> show summary (never show the real password)
+    document.querySelectorAll(".step, #stepInfo, #error, #nextBtn, #backBtn")
+      .forEach((el) => (el.style.display = "none"));
+    summary.innerHTML = `<h3>Summary</h3>
+      <p><b>Name:</b> ${document.getElementById("name").value.trim()}</p>
+      <p><b>Email:</b> ${document.getElementById("email").value.trim()}</p>
+      <p><b>Password:</b> ${"*".repeat(document.getElementById("password").value.length)}</p>`;
+  }
+});
+
+backBtn.addEventListener("click", () => {
+  if (currentStep > 0) { currentStep--; showStep(); }
+});
+
+showStep();
